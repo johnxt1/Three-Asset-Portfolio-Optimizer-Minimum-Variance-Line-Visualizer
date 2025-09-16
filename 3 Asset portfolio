@@ -42,6 +42,31 @@ w_mvp = numerator_mvp / denominator_mvp
 mu_mvp = portfolio_return(w_mvp)
 sigma_mvp = portfolio_vol(w_mvp)
 
+# -- MVL coefficients(a & b vectors) --
+A = mu @ inv_cov @ mu
+B = mu @ inv_cov @ ones
+C = ones @ inv_cov @ ones
+detM = A*C - B**2
+
+a = inv_cov @ (C*mu - B*ones) / detM   
+b = inv_cov @ (A*ones - B*mu) / detM
+
+# -- Minimum Variance Line (MVL) --
+mu_range = np.arange(0.01, max(mu)+0.1, 0.01)               
+sigma_range = np.array([portfolio_vol(a*r + b) for r in mu_range])  
+
+# -- Plot --
+plt.figure(figsize=(10,6))
+plt.plot(sigma_range, mu_range, color="blue", linewidth=2, label="Minimum Variance Line")
+plt.scatter(sigma_mvp, mu_mvp, color="red", marker="*", s=120, label="Minimum Variance Portfolio")
+plt.scatter(sigma, mu, color="black", marker='o', s=70, label='Individual Assets')
+plt.xlabel("Volatility (σ)")
+plt.ylabel("Expected Return (μ)")
+plt.title("Minimum Variance Line, MVP")
+plt.legend()
+plt.grid(True)
+plt.show()
+
 # -- Results --
 print("\n--- Minimum Variance Portfolio (MVP) ---")
 print(f"Weights: {w_mvp}")
