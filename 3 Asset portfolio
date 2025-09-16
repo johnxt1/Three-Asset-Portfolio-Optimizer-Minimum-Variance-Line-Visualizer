@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# -- User Inputs --
+mu1 = float(input("Enter expected return of Asset 1 (e.g. 0.08): "))
+mu2 = float(input("Enter expected return of Asset 2 (e.g. 0.12): "))
+mu3 = float(input("Enter expected return of Asset 3 (e.g. 0.10): "))
+
+sigma1 = float(input("Enter volatility of Asset 1 (e.g. 0.15): "))
+sigma2 = float(input("Enter volatility of Asset 2 (e.g. 0.25): "))
+sigma3 = float(input("Enter volatility of Asset 3 (e.g. 0.20): "))
+
+rho12 = float(input("Enter correlation between Asset 1 and Asset 2 (e.g. 0.2): "))
+rho13 = float(input("Enter correlation between Asset 1 and Asset 3 (e.g. 0.3): "))
+rho23 = float(input("Enter correlation between Asset 2 and Asset 3 (e.g. 0.1): "))
+
+# -- Convert inputs to arrays for compactness --
+mu = np.array([mu1, mu2, mu3])
+sigma = np.array([sigma1, sigma2, sigma3])
+ones = np.ones(3)
+
+# -- Covariance Matrix --
+cov_matrix = np.array([
+    [sigma1**2, rho12*sigma1*sigma2, rho13*sigma1*sigma3],
+    [rho12*sigma1*sigma2, sigma2**2, rho23*sigma2*sigma3],
+    [rho13*sigma1*sigma3, rho23*sigma2*sigma3, sigma3**2]
+])
+
+# -- functions --
+def portfolio_return(w):
+    return w @ mu
+
+def portfolio_vol(w):
+    return np.sqrt(w @ cov_matrix @ w)
+
+# -- Minimum Variance Portfolio (MVP) --
+inv_cov = np.linalg.inv(cov_matrix)
+numerator_mvp = inv_cov @ ones
+denominator_mvp = ones @ numerator_mvp
+
+w_mvp = numerator_mvp / denominator_mvp
+mu_mvp = portfolio_return(w_mvp)
+sigma_mvp = portfolio_vol(w_mvp)
+
+# -- Results --
+print("\n--- Minimum Variance Portfolio (MVP) ---")
+print(f"Weights: {w_mvp}")
+print(f"Expected Return: {mu_mvp:.3f}")
+print(f"Volatility: {sigma_mvp:.3f}")
+
+
+
+
+
+
