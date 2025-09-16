@@ -14,6 +14,8 @@ rho12 = float(input("Enter correlation between Asset 1 and Asset 2 (e.g. 0.2): "
 rho13 = float(input("Enter correlation between Asset 1 and Asset 3 (e.g. 0.3): "))
 rho23 = float(input("Enter correlation between Asset 2 and Asset 3 (e.g. 0.1): "))
 
+target_return = float(input("Enter a target expected return (e.g. 0.11): "))
+
 # -- Convert inputs to arrays for compactness --
 mu = np.array([mu1, mu2, mu3])
 sigma = np.array([sigma1, sigma2, sigma3])
@@ -55,23 +57,34 @@ b = inv_cov @ (A*ones - B*mu) / detM
 mu_range = np.arange(0.01, max(mu)+0.1, 0.01)               
 sigma_range = np.array([portfolio_vol(a*r + b) for r in mu_range])  
 
+# -- Weights for target return portfolio --
+w_target = a*target_return + b
+sigma_target = portfolio_vol(w_target)
+
 # -- Plot --
 plt.figure(figsize=(10,6))
 plt.plot(sigma_range, mu_range, color="blue", linewidth=2, label="Minimum Variance Line")
 plt.scatter(sigma_mvp, mu_mvp, color="red", marker="*", s=120, label="Minimum Variance Portfolio")
+plt.scatter(sigma_target, target_return, color="green", marker="*", s=120, label="Target Return Portfolio")
 plt.scatter(sigma, mu, color="black", marker='o', s=70, label='Individual Assets')
 plt.xlabel("Volatility (σ)")
 plt.ylabel("Expected Return (μ)")
-plt.title("Minimum Variance Line, MVP")
+plt.title("Minimum Variance Line, MVP, and Target Return Portfolio"")
 plt.legend()
 plt.grid(True)
 plt.show()
 
 # -- Results --
-print("\n--- Minimum Variance Portfolio (MVP) ---")
+print("\n-- Minimum Variance Portfolio (MVP) --")
 print(f"Weights: {w_mvp}")
 print(f"Expected Return: {mu_mvp:.3f}")
 print(f"Volatility: {sigma_mvp:.3f}")
+
+print("\n-- Target Return Portfolio --")
+print(f"Target Return: {target_return:.3f}")
+print(f"Weights: {w_target}")
+print(f"Volatility: {sigma_target:.3f}")
+
 
 
 
