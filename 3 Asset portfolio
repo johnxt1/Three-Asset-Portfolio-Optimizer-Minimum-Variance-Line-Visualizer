@@ -55,7 +55,7 @@ b = inv_cov @ (A*ones - B*mu) / detM
 
 # -- Minimum Variance Line (MVL) --
 mu_range = np.arange(0.01, max(mu)+0.1, 0.01)               
-sigma_range = np.array([portfolio_vol(a*r + b) for r in mu_range])  
+sigma_range = np.array([portfolio_vol(a*m + b) for m in mu_range])  
 
 # -- Weights for target return portfolio --
 w_target = a*target_return + b
